@@ -61,13 +61,16 @@
 
 
     /* ============================================================
-       ONLINE STATUS
-    ============================================================ */
+   ONLINE STATUS
+============================================================ */
 
-    window.vbOnlineEnabled = function () {
-        return !!base;
-    };
-
+window.vbOnlineEnabled = function () {
+    // Disable online API requests on GitHub Pages or static hosts
+    if (window.location.hostname.includes("github.io")) {
+        return false;
+    }
+    return !!base;
+};
 
     /* ============================================================
        API ROUTE BUILDER
