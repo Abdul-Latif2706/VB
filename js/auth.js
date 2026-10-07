@@ -102,7 +102,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (
                 typeof vbOnlineEnabled === "function" &&
-                vbOnlineEnabled()
+                vbOnlineEnabled() &&
+                !window.location.hostname.includes("github.io") &&
+                !window.location.hostname.includes("velorianbank.com")
             ) {
 
                 /* ================= ADMIN LOGIN ================= */
