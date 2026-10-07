@@ -1,0 +1,66 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Velorian Bank digital banking prototype"><base href="/VB-/"><title>Personal Banking — Velorian Bank</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/preloader.css">
+</head>
+<body class="app-body client-app">
+  <div id="vb-preloader" aria-label="Loading Velorian Bank" role="status">
+    <div class="vb-loader-shell">
+      <div class="vb-loader-mark">
+        <span class="vb-loader-ring"></span>
+        <img class="vb-loader-logo" src="../assets/logo-transparent.png" alt="Velorian Bank">
+      </div>
+      <p class="vb-loader-name">Velorian Bank</p>
+      <p class="vb-loader-status">Securing your banking experience</p>
+      <div class="vb-loader-progress" aria-hidden="true"></div>
+    </div>
+  </div>
+<div id="toast" class="toast"></div>
+<header class="client-topbar"><a href="index.html" class="client-logo"><img src="../assets/logo.jfif" alt="Velorian Bank"></a><nav class="client-nav"><button id="notificationsBtnTop" class="icon-btn notification-btn" aria-label="Notifications">◔<span id="notificationCount" class="notification-count">0</span></button><span class="client-welcome">Welcome back, <strong id="clientNameTop">Client</strong></span><button id="clientLogout" class="logout-btn">↪ <span>Sign out</span></button></nav></header>
+<main class="client-main">
+<section class="dashboard-welcome-row">
+  <div><span class="eyebrow">PERSONAL BANKING</span><h1>Good to see you, <span id="heroFirstName">Client</span>.</h1><p>Everything you need to monitor your Velorian Bank account in one place.</p></div>
+  <div class="dashboard-status"><span class="status-chip"><i></i> Account active</span><span class="status-chip">24/7 digital access</span></div>
+</section>
+
+<section class="client-dashboard-grid">
+  <div class="account-summary-card">
+    <div class="summary-top"><div><span class="summary-label">AVAILABLE BALANCE</span><div class="summary-account" id="summaryAccountNumber">1092••••••</div></div><span class="summary-currency" id="summaryCurrency">USD</span></div>
+    <div class="summary-balance" id="balanceValue">$0.00</div>
+    <div class="summary-bottom"><span>Funds available for account activity</span><button id="toggleBalance" class="text-btn">Hide balance</button></div>
+  </div>
+  <div class="dashboard-panel glass"><div class="dashboard-panel-head"><div><span class="card-kicker">FINANCIAL SNAPSHOT</span><h2>Account activity</h2></div></div><div class="snapshot-grid"><div class="snapshot-card"><span>Total deposits</span><strong id="totalDeposits">$0.00</strong><small>Successful deposits</small></div><div class="snapshot-card"><span>Total withdrawals</span><strong id="totalWithdrawals">$0.00</strong><small>Successful withdrawals</small></div><div class="snapshot-card"><span>Transactions</span><strong id="transactionCount">0</strong><small>Recorded activities</small></div><div class="snapshot-card"><span>Account status</span><strong id="snapshotStatus">Active</strong><small>Current standing</small></div></div></div>
+</section>
+
+<section class="client-dashboard-actions">
+  <button class="quick-action transfer-action" id="openTransfer"><span>↗</span><strong>Transfer</strong><small>Send funds to another bank</small></button><button class="quick-action statement-action" id="openStatement"><span>▤</span><strong>Statements</strong><small>Generate an account statement</small></button>
+  <button class="quick-action" id="notificationsBtn"><span>◔</span><strong>Notifications</strong><small>Review recent account alerts</small></button>
+  <button class="quick-action" id="openPassword"><span>⌁</span><strong>Security</strong><small>Change your banking password</small></button>
+  <button class="quick-action" id="openSupport"><span>?</span><strong>Support</strong><small>Get help with your account</small></button>
+</section>
+
+<section class="account-profile glass">
+  <div class="profile-main"><div class="profile-avatar" id="profileAvatar">VB</div><div><span class="card-kicker">YOUR ACCOUNT</span><h2 id="profileName">Client</h2><p id="profileEmail">—</p></div></div>
+  <div class="profile-meta"><div><span>Account number</span><strong id="profileAccountNumber">—</strong></div><div><span>Account type</span><strong id="profileType">Savings Account</strong></div><div><span>Member since</span><strong id="profileJoined">—</strong></div></div>
+</section>
+
+<section class="client-dashboard-grid">
+  <div class="panel glass dashboard-activity"><div class="panel-head"><div><span class="card-kicker">ACCOUNT ACTIVITY</span><h2>Recent transactions</h2></div><div class="history-tools"><input id="historySearch" class="search-input" placeholder="Search transactions"><select id="historyFilter"><option value="all">All activity</option><option value="deposit">Deposits</option><option value="withdrawal">Withdrawals</option><option value="transfer_out">Transfers sent</option><option value="transfer_in">Transfers received</option></select></div></div><div class="table-wrap"><table><thead><tr><th>Reference</th><th>Transaction</th><th>Amount</th><th>Status</th><th>Date & time</th></tr></thead><tbody id="clientTransactions"></tbody></table></div></div>
+  <div class="dashboard-side">
+    <div class="dashboard-panel glass"><div class="dashboard-panel-head"><div><span class="card-kicker">ACCOUNT DETAILS</span><h2>Profile</h2></div></div><div class="account-details-list"><div><span>Account number</span><strong id="accountNumberHero">1092••••••</strong></div><div><span>Currency</span><strong id="profileCurrency">USD</strong></div><div><span>Status</span><strong id="profileStatus">Active</strong></div><div><span>Account type</span><strong id="profileTypeSide">Savings Account</strong></div></div></div>
+    <div class="support-card"><span class="card-kicker">BANK SUPPORT</span><h3>Need help?</h3><p>Your account activity is managed by an authorized Velorian Bank administrator. Contact support if you need assistance with your account.</p><div class="support-actions"><button class="secondary-btn" id="openSupportSecondary">Contact support</button></div></div>
+  </div>
+</section>
+
+<section class="dashboard-disclaimer">External transfers require one-time password verification. In this demonstration environment, external-bank transfers are simulated and are not sent through real banking payment rails.</section>
+
+<section class="security-strip glass"><div><span class="card-kicker">ACCOUNT SECURITY</span><h3>Keep your banking access protected</h3><p>Update your password regularly and sign out when you finish.</p></div><button class="secondary-btn" id="openPasswordSecondary">Change password</button></section>
+<footer class="client-footer"><span>© 2026 Velorian Bank</span><span>Trust. Tradition. Future.</span></footer></main>
+<div class="modal-backdrop" id="transferModal"><div class="modal glass wide-modal"><button class="modal-close" data-close="transferModal">×</button><span class="eyebrow">GLOBAL TRANSFER</span><h2>Send money to another bank</h2><p class="modal-sub">Enter the recipient's banking details. You will be asked for a one-time verification code before the transfer is processed.</p><form id="externalTransferForm" class="form-stack form-grid"><label>Recipient full name<input id="transferRecipientName" required placeholder="Recipient name"></label><label>Destination country<input id="transferCountry" required placeholder="United Kingdom"></label><label>Recipient bank<input id="transferBankName" required placeholder="Bank name"></label><label>Recipient account number<input id="transferRecipientAccount" required placeholder="Account number / local identifier"></label><label>IBAN <small>Optional where not applicable</small><input id="transferIban" placeholder="IBAN"></label><label>SWIFT / BIC <small>Recommended for international transfers</small><input id="transferSwift" placeholder="SWIFT / BIC"></label><label>Amount<input id="transferAmount" type="number" min="0.01" step="0.01" required placeholder="0.00"></label><label>Currency<select id="transferCurrency"><option value="USD">USD — US Dollar</option><option value="GBP">GBP — British Pound</option><option value="EUR">EUR — Euro</option></select></label><label class="full-field">Transfer reference / description<input id="transferDescription" maxlength="120" placeholder="Purpose or payment reference"></label><div id="transferBalanceHint" class="account-number-line full-field">Available balance: —</div><p id="transferMessage" class="form-error full-field"></p><button class="primary-btn full-field" type="submit">Continue to OTP verification →</button></form></div></div>
+<div class="modal-backdrop" id="otpModal"><div class="modal glass"><button class="modal-close" data-close="otpModal">×</button><span class="eyebrow">SECURITY VERIFICATION</span><h2>Verify your transfer</h2><p class="modal-sub" id="otpIntro">A one-time code has been sent to your registered email address.</p><form id="otpForm" class="form-stack"><label>6-digit OTP<input id="transferOtp" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="••••••" required></label><div class="otp-timer" id="otpTimer">Expires in 05:00</div><p id="otpMessage" class="form-error"></p><button class="primary-btn" type="submit">Verify & process transfer →</button></form></div></div>
+<div class="modal-backdrop" id="statementModal"><div class="modal glass"><button class="modal-close" data-close="statementModal">×</button><span class="eyebrow">ACCOUNT DOCUMENTS</span><h2>Generate statement</h2><p class="modal-sub">Choose a period, then print or save the statement as PDF.</p><form id="statementForm" class="form-stack"><label>From date<input id="statementFrom" type="date"></label><label>To date<input id="statementTo" type="date"></label><button class="primary-btn" type="submit">Generate statement →</button></form></div></div>
+<div class="modal-backdrop" id="passwordModal"><div class="modal glass"><button class="modal-close" data-close="passwordModal">×</button><span class="eyebrow">SECURITY</span><h2>Change password</h2><form id="ownPasswordForm" class="form-stack"><label>Current password<input id="currentPassword" type="password" required></label><label>New password<input id="newPassword" type="password" minlength="8" required></label><label>Confirm new password<input id="confirmPassword" type="password" minlength="8" required></label><button class="primary-btn" type="submit">Update password</button></form></div></div>
+<div class="modal-backdrop" id="notificationsModal"><div class="modal glass wide-modal"><button class="modal-close" data-close="notificationsModal">×</button><span class="eyebrow">ACCOUNT NOTIFICATIONS</span><h2>Notifications</h2><div id="notificationsList" class="notifications-list"></div></div></div>
+<div class="modal-backdrop" id="receiptModal"><div class="modal glass" id="receiptContent"></div></div>
+<script src="../js/storage.js"></script><script src="../js/config.js"></script><script src="../js/online-api.js"></script><script src="../js/access-control.js"></script><script src="../js/client.js"></script><script src="../js/client-online.js"></script>
+  <script src="../js/preloader.js"></script>
+<script src="../js/password-toggle.js"></script>
+</body></html>

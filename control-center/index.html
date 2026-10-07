@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Velorian Bank administration portal">
+  <title>Control Center — Velorian Bank</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/preloader.css">
+</head>
+<body class="app-body">
+  <div id="vb-preloader" aria-label="Loading Velorian Bank" role="status">
+    <div class="vb-loader-shell">
+      <div class="vb-loader-mark">
+        <span class="vb-loader-ring"></span>
+        <img class="vb-loader-logo" src="../assets/logo-transparent.png" alt="Velorian Bank">
+      </div>
+      <p class="vb-loader-name">Velorian Bank</p>
+      <p class="vb-loader-status">Securing your banking experience</p>
+      <div class="vb-loader-progress" aria-hidden="true"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <img src="../assets/logo.jfif" alt="Velorian Bank">
+    </div>
+    <div class="side-role"><span class="status-dot"></span> Administrator</div>
+    <nav>
+      <button class="nav-item active" data-section="overview">◈ <span>Overview</span></button>
+      <button class="nav-item" data-section="clients">♙ <span>Clients</span></button>
+      <button class="nav-item" data-section="transactions">↕ <span>Transactions</span></button>
+      <button class="nav-item" data-section="audit">◫ <span>Audit log</span></button>
+      <button class="nav-item" data-section="settings">⚙ <span>System</span></button>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="security-note">
+        <span>✓</span>
+        <div><strong>System online</strong><small>Browser prototype</small></div>
+      </div>
+      <button id="resetBankData" class="logout-btn" type="button">↻ <span>Reset bank data</span></button>
+      <button id="adminLogout" class="logout-btn" type="button">↪ <span>Sign out</span></button>
+    </div>
+  </aside>
+
+  <main class="app-main">
+    <header class="topbar">
+      <button class="menu-btn" id="menuBtn">☰</button>
+      <div>
+        <span class="card-kicker">VELORIAN BANK / CONTROL CENTER</span>
+        <h1 id="pageTitle">System Overview</h1>
+      </div>
+      <div class="topbar-user">
+        <div class="avatar">VA</div>
+        <div><strong>Hamza</strong><small>Administrator</small></div>
+      </div>
+    </header>
+
+    <div class="dashboard-content">
+      <!-- Overview Section -->
+      <section class="dashboard-section active" id="overviewSection">
+        <div class="welcome-banner glass">
+          <div>
+            <span class="eyebrow">BANKING OPERATIONS</span>
+            <h2>Good morning, Hamza.</h2>
+            <p>Monitor the bank, manage accounts and review every movement of funds.</p>
+          </div>
+          <button class="secondary-btn" id="quickAddClient" type="button">+ New client</button>
+        </div>
+        <div class="stats-grid" id="adminStats"></div>
+        <div class="analytics-grid">
+          <div class="panel glass">
+            <div class="panel-head">
+              <div><span class="card-kicker">PERFORMANCE</span><h3>Transaction volume</h3></div>
+              <span class="muted">Last 7 days</span>
+            </div>
+            <div id="volumeChart" class="bar-chart"></div>
+          </div>
+          <div class="panel glass">
+            <div class="panel-head">
+              <div><span class="card-kicker">ACCOUNT HEALTH</span><h3>Portfolio status</h3></div>
+            </div>
+            <div id="statusBreakdown" class="status-breakdown"></div>
+          </div>
+        </div>
+        <div class="two-column">
+          <div class="panel glass">
+            <div class="panel-head">
+              <div><span class="card-kicker">LATEST</span><h3>Recent transactions</h3></div>
+              <button class="text-btn" data-go="transactions" type="button">View all →</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Client</th><th>Type</th><th>Amount</th><th>Status</th><th>Time</th></tr>
+                </thead>
+                <tbody id="recentTransactions"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="panel glass">
+            <div class="panel-head">
+              <div><span class="card-kicker">PORTFOLIO</span><h3>Top client balances</h3></div>
+            </div>
+            <div id="topClients" class="client-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Clients Section -->
+      <section class="dashboard-section" id="clientsSection">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">CLIENT DIRECTORY</span>
+            <h2>All client accounts</h2>
+            <p>Create, edit, freeze and manage every registered account.</p>
+          </div>
+          <button class="primary-btn compact" id="addClientBtn" type="button">+ Create client</button>
+        </div>
+        <div class="panel glass">
+          <div class="toolbar">
+            <input id="clientSearch" class="search-input" placeholder="Search name, email or account number...">
+            <select id="clientStatusFilter">
+              <option value="all">All statuses</option>
+              <option>Active</option>
+              <option>Frozen</option>
+              <option>Suspended</option>
+              <option>Closed</option>
+            </select>
+            <span id="clientCount" class="muted"></span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Client</th><th>Account</th><th>Balance</th><th>Activity</th><th>Status</th><th>Actions</th></tr>
+              </thead>
+              <tbody id="clientsTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Transactions Section -->
+      <section class="dashboard-section" id="transactionsSection">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">SYSTEM LEDGER</span>
+            <h2>System transactions</h2>
+            <p>Complete movement-of-funds ledger across all client accounts.</p>
+          </div>
+          <button class="primary-btn" id="openPostTransaction" type="button">+ Post transaction</button>
+        </div>
+        <div class="panel glass">
+          <div class="toolbar">
+            <input id="transactionSearch" class="search-input" placeholder="Search client, account or reference...">
+            <select id="transactionFilter">
+              <option value="all">All types</option>
+              <option value="deposit">Deposits</option>
+              <option value="withdrawal">Withdrawals</option>
+              <option value="transfer_out">Transfers sent</option>
+              <option value="transfer_in">Transfers received</option>
+            </select>
+            <select id="transactionStatusFilter">
+              <option value="all">All statuses</option>
+              <option>Success</option>
+              <option>Pending</option>
+              <option>Failed</option>
+            </select>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Reference</th><th>Client</th><th>Account</th><th>Type</th><th>Amount</th><th>Status</th><th>Timestamp</th></tr>
+              </thead>
+              <tbody id="transactionsTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Audit Section -->
+      <section class="dashboard-section" id="auditSection">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">CONTROL LOG</span>
+            <h2>Audit trail</h2>
+            <p>Administrative and system events are recorded here.</p>
+          </div>
+        </div>
+        <div class="panel glass">
+          <div class="toolbar">
+            <input id="auditSearch" class="search-input" placeholder="Search actions or account numbers...">
+            <span class="muted">Newest first</span>
+          </div>
+          <div id="auditListFull" class="audit-list full-audit"></div>
+        </div>
+      </section>
+
+      <!-- Settings Section -->
+      <section class="dashboard-section" id="settingsSection">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">SYSTEM</span>
+            <h2>Bank configuration</h2>
+            <p>Manage supported account currencies and internal exchange rates.</p>
+          </div>
+        </div>
+        <div class="settings-grid">
+          <div class="panel glass setting-card">
+            <span class="card-kicker">ACCOUNT CURRENCIES</span>
+            <h3>Supported currencies</h3>
+            <p>Each client account can use its own currency.</p>
+            <div class="setting-row"><span>Default system currency</span><strong id="currentCurrencyCode">USD</strong></div>
+            <div class="currency-control">
+              <label for="currencySelect">Default display currency</label>
+              <div class="inline-setting">
+                <select id="currencySelect">
+                  <option value="USD">US Dollar ($)</option>
+                  <option value="GBP">British Pound (£)</option>
+                  <option value="EUR">Euro (€)</option>
+                </select>
+                <button class="primary-btn compact" id="saveCurrency" type="button">Save default</button>
+              </div>
+              <small class="setting-help">This does not change existing client account currencies. New accounts default to this currency.</small>
+            </div>
+            <div class="setting-row"><span>Account prefix</span><strong>1092</strong></div>
+            <div class="setting-row"><span>Daily transfer limit</span><strong id="dailyLimitDisplay">$25,000</strong></div>
+          </div>
+          <div class="panel glass setting-card">
+            <span class="card-kicker">EXCHANGE RATES</span>
+            <h3>Internal transfer rates</h3>
+            <p>Used only when sending money between accounts with different currencies.</p>
+            <div class="rate-grid">
+              <label>USD → GBP<input id="rateUSDGBP" type="number" step="0.0001" min="0.0001"></label>
+              <label>USD → EUR<input id="rateUSDEUR" type="number" step="0.0001" min="0.0001"></label>
+              <label>GBP → USD<input id="rateGBPUSD" type="number" step="0.0001" min="0.0001"></label>
+              <label>GBP → EUR<input id="rateGBPEUR" type="number" step="0.0001" min="0.0001"></label>
+              <label>EUR → USD<input id="rateEURUSD" type="number" step="0.0001" min="0.0001"></label>
+              <label>EUR → GBP<input id="rateEURGBP" type="number" step="0.0001" min="0.0001"></label>
+              <button class="primary-btn full-field" id="saveRates" type="button">Save exchange rates</button>
+            </div>
+            <small class="setting-help">Example: if USD → GBP is 0.78, a $100 transfer credits £78.00.</small>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Modals -->
+  <div class="modal-backdrop" id="postTransactionModal">
+    <div class="modal glass wide-modal">
+      <button class="modal-close" data-close="postTransactionModal">×</button>
+      <span class="eyebrow">ADMINISTRATOR ACTION</span>
+      <h2>Post account transaction</h2>
+      <p class="modal-sub">Only the administrator can add deposits or withdrawals. Pending transactions are recorded but do not change the available balance until marked successful.</p>
+      <form id="postTransactionForm" class="form-stack form-grid">
+        <label>Client account<select id="postClientId" required></select></label>
+        <label>Transaction type
+          <select id="postTransactionType">
+            <option value="deposit">Deposit</option>
+            <option value="withdrawal">Withdrawal</option>
+            <option value="transfer">Internal transfer</option>
+          </select>
+        </label>
+        <label id="postRecipientField" class="hidden">Recipient account<input id="postRecipientAccount" inputmode="numeric" maxlength="10" placeholder="1092XXXXXX"></label>
+        <label>Amount<input id="postTransactionAmount" type="number" min="0.01" step="0.01" placeholder="0.00" required></label>
+        <label>Status
+          <select id="postTransactionStatus">
+            <option>Success</option>
+            <option>Pending</option>
+            <option>Failed</option>
+          </select>
+        </label>
+        <label class="full-field">Description<input id="postTransactionDescription" maxlength="120" placeholder="e.g. Cash deposit processed by administrator"></label>
+        <div id="postTransactionBalance" class="account-number-line full-field">Select a client to view their current balance.</div>
+        <button class="primary-btn full-field" type="submit">Post transaction →</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="clientModal">
+    <div class="modal glass wide-modal">
+      <button class="modal-close" data-close="clientModal">×</button>
+      <span class="eyebrow">NEW ACCOUNT</span>
+      <h2>Create client profile</h2>
+      <p class="modal-sub">A unique 10-digit account number will be generated automatically.</p>
+      <form id="createClientForm" class="form-stack form-grid">
+        <label>Full name<input id="newClientName" required placeholder="e.g. Amina Mensah"></label>
+        <label>Email<input id="newClientEmail" type="email" required placeholder="client@example.com"></label>
+        <label>Phone number
+          <div class="phone-field">
+            <select id="newClientPhoneCode" aria-label="Country code">
+              <option value="+233">🇬🇭 +233</option><option value="+1">🇺🇸 +1</option><option value="+44">🇬🇧 +44</option><option value="+234">🇳🇬 +234</option><option value="+254">🇰🇪 +254</option><option value="+27">🇿🇦 +27</option><option value="+20">🇪🇬 +20</option><option value="+971">🇦🇪 +971</option><option value="+966">🇸🇦 +966</option><option value="+91">🇮🇳 +91</option><option value="+86">🇨🇳 +86</option><option value="+81">🇯🇵 +81</option><option value="+82">🇰🇷 +82</option><option value="+33">🇫🇷 +33</option><option value="+49">🇩🇪 +49</option><option value="+39">🇮🇹 +39</option><option value="+34">🇪🇸 +34</option><option value="+31">🇳🇱 +31</option><option value="+41">🇨🇭 +41</option><option value="+61">🇦🇺 +61</option><option value="+64">🇳🇿 +64</option><option value="+55">🇧🇷 +55</option><option value="+52">🇲🇽 +52</option><option value="+7">🇷🇺 +7</option><option value="+90">🇹🇷 +90</option><option value="+65">🇸🇬 +65</option>
+            </select>
+            <input id="newClientPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="24 000 0000">
+          </div>
+          <small class="setting-help">Select the country code, then enter the local number. It will be stored in international format.</small>
+        </label>
+        <label>Date of birth<input id="newClientDob" type="date"></label>
+        <label>Account type
+          <select id="newClientAccountType">
+            <option>Savings Account</option>
+            <option>Current Account</option>
+            <option>Premium Account</option>
+            <option>Business Account</option>
+          </select>
+        </label>
+        <label>Account currency
+          <select id="newClientCurrency">
+            <option value="USD">US Dollar ($) — USD</option>
+            <option value="GBP">British Pound (£) — GBP</option>
+            <option value="EUR">Euro (€) — EUR</option>
+          </select>
+        </label>
+        <label>Opening balance<input id="newClientBalance" type="number" min="0" step="0.01" value="0" required></label>
+        <label class="full-field">Residential address<textarea id="newClientAddress" rows="3" placeholder="Client residential address"></textarea></label>
+        <label class="full-field">Temporary client password<input id="newClientPassword" type="password" minlength="8" placeholder="Client must change this after first login" required><small class="setting-help full-field">This is a temporary password. The client will be required to create a new password on first sign-in.</small></label>
+        <button class="primary-btn full-field" type="submit">Create client account →</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="editClientModal">
+    <div class="modal glass wide-modal">
+      <button class="modal-close" data-close="editClientModal">×</button>
+      <span class="eyebrow">ACCOUNT MANAGEMENT</span>
+      <h2>Edit client profile</h2>
+      <div class="account-number-line">Account number <strong id="editAccountNumber">—</strong></div>
+      <form id="editClientForm" class="form-stack form-grid">
+        <input type="hidden" id="editClientId">
+        <label>Full name<input id="editName" required></label>
+        <label>Email<input id="editEmail" type="email" required></label>
+        <label>Phone number
+          <div class="phone-field">
+            <select id="editPhoneCode" aria-label="Country code">
+              <option value="+233">🇬🇭 +233</option><option value="+1">🇺🇸 +1</option><option value="+44">🇬🇧 +44</option><option value="+234">🇳🇬 +234</option><option value="+254">🇰🇪 +254</option><option value="+27">🇿🇦 +27</option><option value="+20">🇪🇬 +20</option><option value="+971">🇦🇪 +971</option><option value="+966">🇸🇦 +966</option><option value="+91">🇮🇳 +91</option><option value="+86">🇨🇳 +86</option><option value="+81">🇯🇵 +81</option><option value="+82">🇰🇷 +82</option><option value="+33">🇫🇷 +33</option><option value="+49">🇩🇪 +49</option><option value="+39">🇮🇹 +39</option><option value="+34">🇪🇸 +34</option><option value="+31">🇳🇱 +31</option><option value="+41">🇨🇭 +41</option><option value="+61">🇦🇺 +61</option><option value="+64">🇳🇿 +64</option><option value="+55">🇧🇷 +55</option><option value="+52">🇲🇽 +52</option><option value="+7">🇷🇺 +7</option><option value="+90">🇹🇷 +90</option><option value="+65">🇸🇬 +65</option>
+            </select>
+            <input id="editPhone" type="tel" inputmode="tel" autocomplete="tel">
+          </div>
+        </label>
+        <label>Date of birth<input id="editDob" type="date"></label>
+        <label>Account type
+          <select id="editAccountType">
+            <option>Savings Account</option>
+            <option>Current Account</option>
+            <option>Premium Account</option>
+            <option>Business Account</option>
+          </select>
+        </label>
+        <label>Account currency
+          <select id="editCurrency">
+            <option value="USD">US Dollar ($) — USD</option>
+            <option value="GBP">British Pound (£) — GBP</option>
+            <option value="EUR">Euro (€) — EUR</option>
+          </select>
+        </label>
+        <label>Account status
+          <select id="editStatus">
+            <option>Active</option>
+            <option>Suspended</option>
+            <option>Frozen</option>
+            <option>Closed</option>
+          </select>
+        </label>
+        <label class="full-field">Residential address<textarea id="editAddress" rows="3"></textarea></label>
+        <button class="primary-btn full-field" type="submit">Save profile changes</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="passwordModal">
+    <div class="modal glass">
+      <button class="modal-close" data-close="passwordModal">×</button>
+      <span class="eyebrow">SECURITY</span>
+      <h2>Change client password</h2>
+      <p class="modal-sub">Set a new temporary sign-in password for <strong id="passwordClientName">client</strong>. The client will be required to create a new password at their next login.</p>
+      <form id="passwordForm" class="form-stack">
+        <input type="hidden" id="passwordClientId">
+        <label>New password<input id="clientNewPassword" type="password" minlength="8" required></label>
+        <button class="primary-btn" type="submit">Update password</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="clientDetailsModal">
+    <div class="modal glass wide-modal">
+      <button class="modal-close" data-close="clientDetailsModal">×</button>
+      <div id="clientDetails"></div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/storage.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/online-api.js"></script>
+  <script src="../js/access-control.js"></script>
+  <script src="../js/admin.js"></script>
+  <script src="../js/preloader.js"></script>
+  <script src="../js/password-toggle.js"></script>
+</body>
+</html>
