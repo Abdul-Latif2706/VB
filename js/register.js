@@ -75,8 +75,30 @@ document.addEventListener('DOMContentLoaded', () => {
         state.clients.push(newClient);
         localStorage.setItem('velorian_state', JSON.stringify(state));
 
+        // ================= EMAILJS DISPATCH =================
+        let emailSent = false;
+        try {
+          if (typeof emailjs !== 'undefined') {
+            await emailjs.send("service_vhq5ch8", "template_s8c4jyn", {
+              to_name: name,
+              to_email: email,
+              account_number: accountNumber,
+              account_type: accountType,
+              currency: currency
+            });
+            emailSent = true;
+          }
+        } catch (emailErr) {
+          console.error("Email dispatch failed:", emailErr);
+        }
+
         form.reset();
-        show(`Account created successfully! Your new account number is ${accountNumber}. You can now log into your client portal.`, 'success');
+
+        if (emailSent) {
+          show(`Account created successfully! Your new account number is ${accountNumber}. A confirmation email has been sent to ${email}.`, 'success');
+        } else {
+          show(`Account created successfully! Your new account number is ${accountNumber}. You can now sign in (email delivery was skipped).`, 'warning');
+        }
       }
     } catch (err) { 
       show(err.message || 'Unable to create the account. Please try again.'); 
