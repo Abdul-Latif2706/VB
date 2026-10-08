@@ -65,12 +65,11 @@
 ============================================================ */
 
 window.vbOnlineEnabled = function () {
-    // Disable online API requests on GitHub Pages or static hosts
-    if (window.location.hostname.includes("github.io")) {
-        return false;
-    }
-    return !!base;
-};
+        if (location.hostname.includes("github.io") || location.hostname.includes("velorianbank.com")) {
+            return false;
+        }
+        return !!base;
+    };
 
     /* ============================================================
        API ROUTE BUILDER
