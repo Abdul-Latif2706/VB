@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const $ = s => document.querySelector(s), 
         form = $('#registerForm'), 
         msg = $('#registerMessage');
-  
+ 
   if (!form || !msg) return;
 
   const show = (text, type = 'error') => {
@@ -39,9 +39,10 @@ document.addEventListener('DOMContentLoaded', () => {
         show(r.emailSent ? `Account created successfully. Your account number is ${r.client.accountNumber}. A confirmation email has been sent to ${r.client.email}.` : `Account created successfully. Your account number is ${r.client.accountNumber}. Email delivery still needs to be configured by the bank administrator.`, r.emailSent ? 'success' : 'warning');
       } else {
         // ================= OFFLINE / LOCAL STORAGE REGISTRATION =================
-        let state = { clients: [], admin: { email: 'admin@velorianbank.com', password: 'password123' } };
+        const STORAGE_KEY = typeof VB_STORAGE_KEY !== 'undefined' ? VB_STORAGE_KEY : 'velorian_bank_state_v5';
+        let state = { clients: [], admin: { email: 'admin@velorianbank.com', password: 'Velorian@2026' } };
         try {
-          const rawState = localStorage.getItem('velorian_state');
+          const rawState = localStorage.getItem(STORAGE_KEY);
           if (rawState) state = JSON.parse(rawState);
         } catch (err) {}
 
@@ -53,8 +54,9 @@ document.addEventListener('DOMContentLoaded', () => {
           throw new Error('An account with this email address already exists.');
         }
 
-        // Generate a unique 10-digit account number
-        const accountNumber = '10' + Math.floor(10000000 + Math.random() * 90000000);
+        // Generate a unique 10-digit account number matching your prefix format
+        const prefix = typeof ACCOUNT_PREFIX !== 'undefined' ? ACCOUNT_PREFIX : '1092';
+        const accountNumber = prefix + Math.floor(100000 + Math.random() * 900000);
         const clientId = 'client_' + Date.now();
 
         const newClient = {
@@ -73,7 +75,12 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         state.clients.push(newClient);
-        localStorage.setItem('velorian_state', JSON.stringify(state));
+        
+        if (typeof vbSaveState === 'function') {
+          vbSaveState(state);
+        } else {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        }
 
         // ================= EMAILJS DISPATCH =================
         let emailSent = false;
@@ -97,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (emailSent) {
           show(`Account created successfully! Your new account number is ${accountNumber}. A confirmation email has been sent to ${email}.`, 'success');
         } else {
-          show(`Account created successfully! Your new account number is ${accountNumber}. You can now sign in (email delivery was skipped).`, 'warning');
+          show(`Account created successfully! Your new account number is ${accountNumber}. You can now sign in.`, 'success');
         }
       }
     } catch (err) { 
