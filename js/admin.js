@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
         HELPERS
         ========================================================= */
 
-    const $ = (selector) => document.querySelector(selector);     const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+    const $ = (selector) => document.querySelector(selector);         const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 
     const esc = (value) =>
         String(value ?? "").replace(/[&<>'"]/g, (char) => ({
@@ -263,7 +263,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     /* =========================================================
-        MODALS
+        MODALS & BUTTON TRIGGERS
         ========================================================= */
 
     $$("[data-close]").forEach((button) => {         button.addEventListener("click", () => {             closeModal(button.dataset.close);         });     });      $$
@@ -273,6 +273,25 @@ document.addEventListener("DOMContentLoaded", () => {
                 backdrop.classList.remove("open");
             }
         });
+    });
+
+    // Wire up handlers for "+ New client" and "+ Create client" buttons
+    document.addEventListener("click", (e) => {
+        const targetBtn = e.target.closest("button");
+        if (targetBtn) {
+            const text = targetBtn.textContent.trim();
+            if (text.includes("New client") || text.includes("Create client") || targetBtn.id === "newClientBtn" || targetBtn.id === "createClientBtn") {
+                // Open client creation modal (supporting common modal IDs)
+                if ($("#clientModal")) {
+                    modal("clientModal", true);
+                } else if ($("#createClientModal")) {
+                    modal("createClientModal", true);
+                } else {
+                    // Fallback to navigating or prompting if modal markup doesn't exist
+                    switchSection("clients");
+                }
+            }
+        }
     });
 
     /* =========================================================
