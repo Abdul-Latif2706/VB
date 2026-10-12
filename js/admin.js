@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
         HELPERS
         ========================================================= */
 
-    const $ = (selector) => document.querySelector(selector);         const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+    const $ = (selector) => document.querySelector(selector);             const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 
     const esc = (value) =>
         String(value ?? "").replace(/[&<>'"]/g, (char) => ({
@@ -152,7 +152,10 @@ document.addEventListener("DOMContentLoaded", () => {
     window.recordAdminTransaction = function(clientId, type, amount, description) {
         const state = getState();
         const client = state.clients.find(c => c.id === clientId || c.accountNumber === clientId);
-        if (!client) return;
+        if (!client) {
+            toast("Client account not found.", "error");
+            return;
+        }
 
         if (!Array.isArray(client.transactions)) {
             client.transactions = [];
@@ -241,7 +244,7 @@ document.addEventListener("DOMContentLoaded", () => {
         $("#mobileOverlay")?.classList.remove("open");
     }
 
-    $$("[data-section]").forEach((button) => {         button.addEventListener("click", () => {             switchSection(button.dataset.section);         });     });      $$
+    $$("[data-section]").forEach((button) => {        button.addEventListener("click", () => {            switchSection(button.dataset.section);        });    });     $$
 ("[data-go]").forEach((button) => {
         button.addEventListener("click", () => {
             switchSection(button.dataset.go);
@@ -266,7 +269,7 @@ document.addEventListener("DOMContentLoaded", () => {
         MODALS & BUTTON TRIGGERS
         ========================================================= */
 
-    $$("[data-close]").forEach((button) => {         button.addEventListener("click", () => {             closeModal(button.dataset.close);         });     });      $$
+    $$("[data-close]").forEach((button) => {        button.addEventListener("click", () => {            closeModal(button.dataset.close);        });    });     $$
 (".modal-backdrop").forEach((backdrop) => {
         backdrop.addEventListener("click", (event) => {
             if (event.target === backdrop) {
@@ -275,20 +278,37 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Wire up handlers for "+ New client" and "+ Create client" buttons
+    // Event delegation for action buttons (+ New client, + Create client, + Post transaction)
     document.addEventListener("click", (e) => {
         const targetBtn = e.target.closest("button");
-        if (targetBtn) {
-            const text = targetBtn.textContent.trim();
-            if (text.includes("New client") || text.includes("Create client") || targetBtn.id === "newClientBtn" || targetBtn.id === "createClientBtn") {
-                // Open client creation modal (supporting common modal IDs)
-                if ($("#clientModal")) {
-                    modal("clientModal", true);
-                } else if ($("#createClientModal")) {
-                    modal("createClientModal", true);
-                } else {
-                    // Fallback to navigating or prompting if modal markup doesn't exist
-                    switchSection("clients");
+        if (!targetBtn) return;
+
+        const text = targetBtn.textContent.trim().toLowerCase();
+
+        // Handle New / Create Client buttons
+        if (text.includes("new client") || text.includes("create client") || targetBtn.id === "newClientBtn" || targetBtn.id === "createClientBtn") {
+            if ($("#clientModal")) {
+                modal("clientModal", true);
+            } else if ($("#createClientModal")) {
+                modal("createClientModal", true);
+            } else {
+                switchSection("clients");
+            }
+        }
+
+        // Handle Post Transaction button
+        if (text.includes("post transaction") || targetBtn.id === "postTransactionBtn") {
+            if ($("#transactionModal")) {
+                modal("transactionModal", true);
+            } else if ($("#postTransactionModal")) {
+                modal("postTransactionModal", true);
+            } else {
+                const accNo = prompt("Enter client account number:");
+                const type = prompt("Enter type (deposit / withdrawal):", "deposit");
+                const amount = prompt("Enter amount:");
+                const desc = prompt("Enter description:", "Admin Adjustment");
+                if (accNo && amount) {
+                    window.recordAdminTransaction(accNo, type, amount, desc);
                 }
             }
         }
