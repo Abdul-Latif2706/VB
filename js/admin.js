@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
         HELPERS
         ========================================================= */
 
-    const $ = (selector) => document.querySelector(selector);             const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+    const $= (selector) => document.querySelector(selector);            const$$ = (selector) => Array.from(document.querySelectorAll(selector));
 
     const esc = (value) =>
         String(value ?? "").replace(/[&<>'"]/g, (char) => ({
@@ -196,6 +196,28 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     /* =========================================================
+        POPULATE CLIENT DROPDOWN FOR TRANSACTIONS
+        ========================================================= */
+
+    function populateTransactionClientDropdown() {
+        const clientSelect = $("#txClientSelect") || $("#transactionClient") \vert{}\vert{} $("#txClientId") || $("select[name='clientId']") \vert{}\vert{} $("select");
+        if (!clientSelect) return;
+
+        const state = getState();
+        if (!state.clients || state.clients.length === 0) {
+            clientSelect.innerHTML = `<option value="">No clients available</option>`;
+            return;
+        }
+
+        clientSelect.innerHTML = `<option value="">Select client account...</option>` + 
+            state.clients.map(client => `
+                <option value="${esc(client.id || client.accountNumber)}">
+                    ${esc(client.name)} — ${esc(client.accountNumber)} (${esc(client.currency || 'USD')})
+                </option>
+            `).join('');
+    }
+
+    /* =========================================================
         RENDER CONTROLLER
         ========================================================= */
 
@@ -244,7 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
         $("#mobileOverlay")?.classList.remove("open");
     }
 
-    $$("[data-section]").forEach((button) => {        button.addEventListener("click", () => {            switchSection(button.dataset.section);        });    });     $$
+    $$("[data-section]").forEach((button) => {       button.addEventListener("click", () => {            switchSection(button.dataset.section);        });    });     $$
 ("[data-go]").forEach((button) => {
         button.addEventListener("click", () => {
             switchSection(button.dataset.go);
@@ -269,7 +291,7 @@ document.addEventListener("DOMContentLoaded", () => {
         MODALS & BUTTON TRIGGERS
         ========================================================= */
 
-    $$("[data-close]").forEach((button) => {        button.addEventListener("click", () => {            closeModal(button.dataset.close);        });    });     $$
+    $$("[data-close]").forEach((button) => {       button.addEventListener("click", () => {            closeModal(button.dataset.close);        });    });     $$
 (".modal-backdrop").forEach((backdrop) => {
         backdrop.addEventListener("click", (event) => {
             if (event.target === backdrop) {
@@ -298,6 +320,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Handle Post Transaction button
         if (text.includes("post transaction") || targetBtn.id === "postTransactionBtn") {
+            populateTransactionClientDropdown(); // Populate client dropdown dynamically
+
             if ($("#transactionModal")) {
                 modal("transactionModal", true);
             } else if ($("#postTransactionModal")) {
@@ -311,6 +335,39 @@ document.addEventListener("DOMContentLoaded", () => {
                     window.recordAdminTransaction(accNo, type, amount, desc);
                 }
             }
+        }
+    });
+
+    // Handle transaction modal form submission
+    document.addEventListener("submit", (e) => {
+        const form = e.target;
+        if (form.id === "transactionForm" || form.id === "postTransactionForm" || form.closest("#transactionModal") || form.closest("#postTransactionModal")) {
+            e.preventDefault();
+
+            const clientSelect = form.querySelector("select") || $("#txClientSelect") \vert{}\vert{} $("#transactionClient");
+            const typeSelect = form.querySelector("select[name='type']") || $("#txType") \vert{}\vert{} $("#transactionType");
+            const amountInput = form.querySelector("input[type='number']") || $("#txAmount") \vert{}\vert{} $("#transactionAmount");
+            const descInput = form.querySelector("input[name='description']") || $("#txDescription") \vert{}\vert{} $("#transactionDescription");
+
+            const clientId = clientSelect ? clientSelect.value : "";
+            const type = typeSelect ? typeSelect.value : "deposit";
+            const amount = amountInput ? amountInput.value : "";
+            const description = descInput ? descInput.value : "Admin Transaction";
+
+            if (!clientId) {
+                toast("Please select a client account.", "error");
+                return;
+            }
+            if (!amount || parseFloat(amount) <= 0) {
+                toast("Please enter a valid transaction amount.", "error");
+                return;
+            }
+
+            window.recordAdminTransaction(clientId, type, amount, description);
+
+            closeModal("transactionModal");
+            closeModal("postTransactionModal");
+            form.reset();
         }
     });
 
@@ -614,6 +671,38 @@ document.addEventListener("DOMContentLoaded", () => {
                 saveState(state);
                 renderAll();
                 toast("Client account deleted successfully.", "success");
+            }
+        }
+
+        // Handle Manage Client button
+        const manageBtn = e.target.closest("[data-view-client]");
+        if (manageBtn) {
+            const clientId = manageBtn.dataset.viewClient;
+            const state = getState();
+            const client = state.clients.find(c => c.id === clientId);
+            
+            if (client) {
+                if ($("#manageClientModal")) {
+                    $("#manageClientName").textContent = client.name;
+                    $("#manageClientEmail").textContent = client.email;
+                    $("#manageClientAccount").textContent = client.accountNumber;
+                    modal("manageClientModal", true);
+                } else {
+                    const action = prompt(`Manage client: ${client.name}\nChoose action:\n1. Freeze/Unfreeze account\n2. Adjust balance\n3. View details`, "3");
+                    if (action === "1") {
+                        client.status = client.status === "Active" ? "Frozen" : "Active";
+                        saveState(state);
+                        renderAll();
+                        toast(`Client status changed to ${client.status}`);
+                    } else if (action === "2") {
+                        const amount = prompt("Enter amount to add/subtract (e.g. 100 or -50):");
+                        if (amount) {
+                            window.recordAdminTransaction(client.id, Number(amount) >= 0 ? "deposit" : "withdrawal", Math.abs(amount), "Admin Direct Adjustment");
+                        }
+                    } else {
+                        alert(`Client Details:\nName: ${client.name}\nEmail: ${client.email}\nAccount: ${client.accountNumber}\nBalance: ${client.currency} ${client.balance}\nStatus: ${client.status}`);
+                    }
+                }
             }
         }
     });
