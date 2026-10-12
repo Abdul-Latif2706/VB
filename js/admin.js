@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
         HELPERS
         ========================================================= */
 
-    const $ = (selector) => document.querySelector(selector);     const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+    const $ = (selector) => document.querySelector(selector); const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 
     const esc = (value) =>
         String(value ?? "").replace(/[&<>'"]/g, (char) => ({
@@ -262,7 +262,7 @@ document.addEventListener("DOMContentLoaded", () => {
         $("#mobileOverlay")?.classList.remove("open");
     }
 
-    $$("[data-section]").forEach((button) => {         button.addEventListener("click", () => {             switchSection(button.dataset.section);         });     });      $$
+    $$("[data-section]").forEach((button) => { button.addEventListener("click", () => { switchSection(button.dataset.section); }); });      $$
 ("[data-go]").forEach((button) => {
         button.addEventListener("click", () => {
             switchSection(button.dataset.go);
@@ -270,24 +270,32 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     /* =========================================================
-        MOBILE MENU
+        MOBILE MENU (FIXED)
         ========================================================= */
 
-    $("#menuBtn")?.addEventListener("click", () => {
-        $("#sidebar")?.classList.toggle("open");
-        $("#mobileOverlay")?.classList.toggle("open");
-    });
+    const menuBtn = $("#menuBtn");
+    const sidebar = $("#sidebar");
+    const mobileOverlay = $("#mobileOverlay");
 
-    $("#mobileOverlay")?.addEventListener("click", () => {
-        $("#sidebar")?.classList.remove("open");
-        $("#mobileOverlay")?.classList.remove("open");
-    });
+    if (menuBtn) {
+        menuBtn.addEventListener("click", () => {
+            sidebar?.classList.toggle("open");
+            mobileOverlay?.classList.toggle("open");
+        });
+    }
+
+    if (mobileOverlay) {
+        mobileOverlay.addEventListener("click", () => {
+            sidebar?.classList.remove("open");
+            mobileOverlay?.classList.remove("open");
+        });
+    }
 
     /* =========================================================
-        MODALS & BUTTON TRIGGERS
+        MODALS & BUTTON TRIGGERS (FIXED)
         ========================================================= */
 
-    $$("[data-close]").forEach((button) => {         button.addEventListener("click", () => {             closeModal(button.dataset.close);         });     });      $$
+    $$("[data-close]").forEach((button) => { button.addEventListener("click", () => { closeModal(button.dataset.close); }); });      $$
 (".modal-backdrop").forEach((backdrop) => {
         backdrop.addEventListener("click", (event) => {
             if (event.target === backdrop) {
@@ -297,12 +305,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     document.addEventListener("click", (e) => {
-        const targetBtn = e.target.closest("button");
+        const targetBtn = e.target.closest("button, .stat-card, a");
         if (!targetBtn) return;
 
         const text = targetBtn.textContent.trim().toLowerCase();
 
+        // Handle New / Create Client buttons
         if (text.includes("new client") || text.includes("create client") || targetBtn.id === "newClientBtn" || targetBtn.id === "createClientBtn") {
+            e.preventDefault();
             if ($("#clientModal")) {
                 modal("clientModal", true);
             } else if ($("#createClientModal")) {
@@ -312,7 +322,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
+        // Handle Post Transaction button
         if (text.includes("post transaction") || targetBtn.id === "postTransactionBtn") {
+            e.preventDefault();
             populateTransactionClientDropdown();
 
             if ($("#transactionModal")) {
