@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const $ = s => document.querySelector(s), 
         form = $('#registerForm'), 
         msg = $('#registerMessage');
- 
+
   if (!form || !msg) return;
 
   const show = (text, type = 'error') => {
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
           throw new Error('An account with this email address already exists.');
         }
 
-        // Generate a unique 10-digit account number matching your prefix format
+        // Generate a unique 10-digit account number
         const prefix = typeof ACCOUNT_PREFIX !== 'undefined' ? ACCOUNT_PREFIX : '1092';
         const accountNumber = prefix + Math.floor(100000 + Math.random() * 900000);
         const clientId = 'client_' + Date.now();
@@ -86,9 +86,9 @@ document.addEventListener('DOMContentLoaded', () => {
         let emailSent = false;
         try {
           if (typeof emailjs !== 'undefined') {
-            await emailjs.send("service_vhq5ch8", "template_s8c4jyn", {
+            await emailjs.send("service_vhq5ch8", "template_zpyg37y", {
               to_name: name,
-              to_email: email,
+              email: email, // Matches {{email}} in EmailJS template
               account_number: accountNumber,
               account_type: accountType,
               currency: currency
@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (emailSent) {
           show(`Account created successfully! Your new account number is ${accountNumber}. A confirmation email has been sent to ${email}.`, 'success');
         } else {
-          show(`Account created successfully! Your new account number is ${accountNumber}. You can now sign in.`, 'success');
+          show(`Account created successfully! Your new account number is ${accountNumber}. You can now sign in (email confirmation skipped).`, 'warning');
         }
       }
     } catch (err) { 
