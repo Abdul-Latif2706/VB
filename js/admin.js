@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
         HELPERS
         ========================================================= */
 
-    const $= (selector) => document.querySelector(selector);            const$$ = (selector) => Array.from(document.querySelectorAll(selector));
+    const $ = (selector) => document.querySelector(selector);     const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 
     const esc = (value) =>
         String(value ?? "").replace(/[&<>'"]/g, (char) => ({
@@ -146,7 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /* =========================================================
-        ADMIN TRANSACTION SYNC & RECORDING (CRITICAL FOR CLIENT DASHBOARD PARITY)
+        ADMIN TRANSACTION SYNC & RECORDING
         ========================================================= */
 
     window.recordAdminTransaction = function(clientId, type, amount, description) {
@@ -177,17 +177,13 @@ document.addEventListener("DOMContentLoaded", () => {
             timestamp: timestamp
         };
 
-        // Update client balance securely
         if (type.toLowerCase() === 'deposit' || type.toLowerCase() === 'transfer_in' || type.toLowerCase() === 'credit') {
             client.balance = Number(client.balance || 0) + numericAmount;
         } else {
             client.balance = Number(client.balance || 0) - numericAmount;
         }
 
-        // Push to client's personal transaction history so it renders on their dashboard
         client.transactions.unshift(newTransaction);
-
-        // Push to global admin ledger
         state.transactions.unshift(newTransaction);
 
         saveState(state);
@@ -266,7 +262,7 @@ document.addEventListener("DOMContentLoaded", () => {
         $("#mobileOverlay")?.classList.remove("open");
     }
 
-    $$("[data-section]").forEach((button) => {       button.addEventListener("click", () => {            switchSection(button.dataset.section);        });    });     $$
+    $$("[data-section]").forEach((button) => {         button.addEventListener("click", () => {             switchSection(button.dataset.section);         });     });      $$
 ("[data-go]").forEach((button) => {
         button.addEventListener("click", () => {
             switchSection(button.dataset.go);
@@ -291,7 +287,7 @@ document.addEventListener("DOMContentLoaded", () => {
         MODALS & BUTTON TRIGGERS
         ========================================================= */
 
-    $$("[data-close]").forEach((button) => {       button.addEventListener("click", () => {            closeModal(button.dataset.close);        });    });     $$
+    $$("[data-close]").forEach((button) => {         button.addEventListener("click", () => {             closeModal(button.dataset.close);         });     });      $$
 (".modal-backdrop").forEach((backdrop) => {
         backdrop.addEventListener("click", (event) => {
             if (event.target === backdrop) {
@@ -300,14 +296,12 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Event delegation for action buttons (+ New client, + Create client, + Post transaction)
     document.addEventListener("click", (e) => {
         const targetBtn = e.target.closest("button");
         if (!targetBtn) return;
 
         const text = targetBtn.textContent.trim().toLowerCase();
 
-        // Handle New / Create Client buttons
         if (text.includes("new client") || text.includes("create client") || targetBtn.id === "newClientBtn" || targetBtn.id === "createClientBtn") {
             if ($("#clientModal")) {
                 modal("clientModal", true);
@@ -318,9 +312,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        // Handle Post Transaction button
         if (text.includes("post transaction") || targetBtn.id === "postTransactionBtn") {
-            populateTransactionClientDropdown(); // Populate client dropdown dynamically
+            populateTransactionClientDropdown();
 
             if ($("#transactionModal")) {
                 modal("transactionModal", true);
@@ -338,7 +331,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Handle transaction modal form submission
     document.addEventListener("submit", (e) => {
         const form = e.target;
         if (form.id === "transactionForm" || form.id === "postTransactionForm" || form.closest("#transactionModal") || form.closest("#postTransactionModal")) {
@@ -372,7 +364,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     /* =========================================================
-        CURRENCY TOTALS
+        CURRENCY TOTALS & STATISTICS
         ========================================================= */
 
     function totalsByCurrency(items) {
@@ -390,10 +382,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 .join(" • ") || "$0.00"
         );
     }
-
-    /* =========================================================
-        STATISTICS
-        ========================================================= */
 
     function renderStats() {
         const state = getState();
@@ -426,10 +414,6 @@ document.addEventListener("DOMContentLoaded", () => {
             `)
             .join("");
     }
-
-    /* =========================================================
-        CHART
-        ========================================================= */
 
     function renderChart() {
         const state = getState();
@@ -466,10 +450,6 @@ document.addEventListener("DOMContentLoaded", () => {
             .join("");
     }
 
-    /* =========================================================
-        ACCOUNT STATUS
-        ========================================================= */
-
     function renderStatus() {
         const state = getState();
         const total = Math.max(state.clients.length, 1);
@@ -501,10 +481,6 @@ document.addEventListener("DOMContentLoaded", () => {
             .join("");
     }
 
-    /* =========================================================
-        RECENT TRANSACTIONS
-        ========================================================= */
-
     function renderRecent() {
         const state = getState();
         const element = $("#recentTransactions");
@@ -533,10 +509,6 @@ document.addEventListener("DOMContentLoaded", () => {
         element.innerHTML = rows || `<tr><td colspan="5"><div class="empty-state">No transactions yet.</div></td></tr>`;
     }
 
-    /* =========================================================
-        TOP CLIENTS
-        ========================================================= */
-
     function renderTopClients() {
         const state = getState();
         const element = $("#topClients");
@@ -559,10 +531,6 @@ document.addEventListener("DOMContentLoaded", () => {
             `)
             .join("") || `<div class="empty-state">No client accounts yet.</div>`;
     }
-
-    /* =========================================================
-        CLIENT TABLE & MANAGEMENT
-        ========================================================= */
 
     function renderClients() {
         const state = getState();
@@ -616,10 +584,6 @@ document.addEventListener("DOMContentLoaded", () => {
             .join("") || `<tr><td colspan="6"><div class="empty-state">No clients match your search.</div></td></tr>`;
     }
 
-    /* =========================================================
-        TRANSACTION TABLE
-        ========================================================= */
-
     function renderTransactions() {
         const state = getState();
         const search = ($("#transactionSearch")?.value || "").toLowerCase().trim();
@@ -660,7 +624,6 @@ document.addEventListener("DOMContentLoaded", () => {
             .join("") || `<tr><td colspan="7"><div class="empty-state">No transactions found.</div></td></tr>`;
     }
 
-    // Event delegation for actions (Manage / Delete clients)
     document.addEventListener("click", (e) => {
         const deleteBtn = e.target.closest("[data-delete-client]");
         if (deleteBtn) {
@@ -674,7 +637,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        // Handle Manage Client button
         const manageBtn = e.target.closest("[data-view-client]");
         if (manageBtn) {
             const clientId = manageBtn.dataset.viewClient;
@@ -707,21 +669,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    /* =========================================================
-        SIGN OUT & DATA RESET HANDLERS
-        ========================================================= */
-
     document.addEventListener("click", (e) => {
         const target = e.target.closest("button, a, div");
         if (!target) return;
 
         const text = target.textContent.trim().toLowerCase();
 
-        // Sign Out action
         if (text.includes("sign out") || target.id === "logoutBtn" || target.id === "signOutBtn") {
             e.preventDefault();
 
-            // Clear session storage & local flags
             sessionStorage.removeItem("vb_api_admin_token");
             sessionStorage.removeItem("admin_token");
             localStorage.removeItem("velorian_admin_logged_in");
@@ -737,7 +693,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }, 800);
         }
 
-        // Reset Bank Data action
         if (text.includes("reset bank data") || target.id === "resetDataBtn") {
             e.preventDefault();
 
@@ -753,6 +708,5 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Initial render call
     renderAll();
 });

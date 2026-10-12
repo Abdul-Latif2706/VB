@@ -14,8 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     const name = $('#regName').value.trim(),
           email = $('#regEmail').value.trim(),
-          country = $('#regCountry').value.trim(),
-          phone = $('#regPhone').value.trim(),
+          country = $('#regCountry').value,
+          postalCode = $('#regPhone').value.trim(), // Formerly phone number input
           accountType = $('#regAccountType').value,
           currency = $('#regCurrency').value,
           password = $('#regPassword').value,
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       // Check if online API is active; if not, use local offline mode registration
       if (typeof vbOnlineEnabled === 'function' && vbOnlineEnabled()) {
-        const r = await vbOnlineRegister({name, email, country, phone, accountType, currency, password});
+        const r = await vbOnlineRegister({name, email, country, phone: postalCode, accountType, currency, password});
         if (r.client) vbMergeRemoteClients([r.client]);
         form.reset();
         show(r.emailSent ? `Account created successfully. Your account number is ${r.client.accountNumber}. A confirmation email has been sent to ${r.client.email}.` : `Account created successfully. Your account number is ${r.client.accountNumber}. Email delivery still needs to be configured by the bank administrator.`, r.emailSent ? 'success' : 'warning');
@@ -64,7 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
           name,
           email,
           country,
-          phone,
+          postalCode, // Stores Postal / ZIP Code
+          phone: postalCode,
           accountType,
           currency,
           accountNumber,
