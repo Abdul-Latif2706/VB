@@ -5,19 +5,20 @@
   <meta name="robots" content="noindex,nofollow,noarchive">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="Velorian Bank administration portal">
+  <base href="/">
   <title>Control Center — Velorian Bank</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/styles.css">
-  <link rel="stylesheet" href="../css/preloader.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/preloader.css">
 </head>
 <body class="app-body">
   <div id="vb-preloader" aria-label="Loading Velorian Bank" role="status">
     <div class="vb-loader-shell">
       <div class="vb-loader-mark">
         <span class="vb-loader-ring"></span>
-        <img class="vb-loader-logo" src="../assets/logo-transparent.png" alt="Velorian Bank">
+        <img class="vb-loader-logo" src="assets/logo-transparent.png" alt="Velorian Bank">
       </div>
       <p class="vb-loader-name">Velorian Bank</p>
       <p class="vb-loader-status">Securing your banking experience</p>
@@ -30,15 +31,15 @@
 
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-      <img src="../assets/logo.jfif" alt="Velorian Bank">
+      <img src="assets/logo.jfif" alt="Velorian Bank">
     </div>
     <div class="side-role"><span class="status-dot"></span> Administrator</div>
     <nav>
-      <button class="nav-item active" data-section="overview">◈ <span>Overview</span></button>
-      <button class="nav-item" data-section="clients">♙ <span>Clients</span></button>
-      <button class="nav-item" data-section="transactions">↕ <span>Transactions</span></button>
-      <button class="nav-item" data-section="audit">◫ <span>Audit log</span></button>
-      <button class="nav-item" data-section="settings">⚙ <span>System</span></button>
+      <button class="nav-item active" data-section="overview" type="button">◈ <span>Overview</span></button>
+      <button class="nav-item" data-section="clients" type="button">♙ <span>Clients</span></button>
+      <button class="nav-item" data-section="transactions" type="button">↕ <span>Transactions</span></button>
+      <button class="nav-item" data-section="audit" type="button">◫ <span>Audit log</span></button>
+      <button class="nav-item" data-section="settings" type="button">⚙ <span>System</span></button>
     </nav>
     <div class="sidebar-bottom">
       <div class="security-note">
@@ -52,7 +53,7 @@
 
   <main class="app-main">
     <header class="topbar">
-      <button class="menu-btn" id="menuBtn">☰</button>
+      <button class="menu-btn" id="menuBtn" type="button" aria-label="Toggle menu">☰</button>
       <div>
         <span class="card-kicker">VELORIAN BANK / CONTROL CENTER</span>
         <h1 id="pageTitle">System Overview</h1>
@@ -256,7 +257,7 @@
   <!-- Modals -->
   <div class="modal-backdrop" id="postTransactionModal">
     <div class="modal glass wide-modal">
-      <button class="modal-close" data-close="postTransactionModal">×</button>
+      <button class="modal-close" data-close="postTransactionModal" type="button">×</button>
       <span class="eyebrow">ADMINISTRATOR ACTION</span>
       <h2>Post account transaction</h2>
       <p class="modal-sub">Only the administrator can add deposits or withdrawals. Pending transactions are recorded but do not change the available balance until marked successful.</p>
@@ -287,7 +288,7 @@
 
   <div class="modal-backdrop" id="clientModal">
     <div class="modal glass wide-modal">
-      <button class="modal-close" data-close="clientModal">×</button>
+      <button class="modal-close" data-close="clientModal" type="button">×</button>
       <span class="eyebrow">NEW ACCOUNT</span>
       <h2>Create client profile</h2>
       <p class="modal-sub">A unique 10-digit account number will be generated automatically.</p>
@@ -329,7 +330,7 @@
 
   <div class="modal-backdrop" id="editClientModal">
     <div class="modal glass wide-modal">
-      <button class="modal-close" data-close="editClientModal">×</button>
+      <button class="modal-close" data-close="editClientModal" type="button">×</button>
       <span class="eyebrow">ACCOUNT MANAGEMENT</span>
       <h2>Edit client profile</h2>
       <div class="account-number-line">Account number <strong id="editAccountNumber">—</strong></div>
@@ -377,7 +378,7 @@
 
   <div class="modal-backdrop" id="passwordModal">
     <div class="modal glass">
-      <button class="modal-close" data-close="passwordModal">×</button>
+      <button class="modal-close" data-close="passwordModal" type="button">×</button>
       <span class="eyebrow">SECURITY</span>
       <h2>Change client password</h2>
       <p class="modal-sub">Set a new temporary sign-in password for <strong id="passwordClientName">client</strong>. The client will be required to create a new password at their next login.</p>
@@ -391,18 +392,18 @@
 
   <div class="modal-backdrop" id="clientDetailsModal">
     <div class="modal glass wide-modal">
-      <button class="modal-close" data-close="clientDetailsModal">×</button>
+      <button class="modal-close" data-close="clientDetailsModal" type="button">×</button>
       <div id="clientDetails"></div>
     </div>
   </div>
 
   <!-- Scripts -->
-  <script src="../js/storage.js"></script>
-  <script src="../js/config.js"></script>
-  <script src="../js/online-api.js"></script>
-  <script src="../js/access-control.js"></script>
-  <script src="../js/admin.js"></script>
-  <script src="../js/preloader.js"></script>
-  <script src="../js/password-toggle.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/online-api.js"></script>
+  <script src="js/access-control.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/preloader.js"></script>
+  <script src="js/password-toggle.js"></script>
 </body>
 </html>
