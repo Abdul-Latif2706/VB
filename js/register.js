@@ -82,21 +82,48 @@ document.addEventListener('DOMContentLoaded', () => {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
         }
 
-        // ================= EMAILJS DISPATCH =================
+        // ================= RESEND EMAIL DISPATCH =================
         let emailSent = false;
         try {
-          if (typeof emailjs !== 'undefined') {
-            await emailjs.send("service_vhq5ch8", "template_zpyg37y", {
-              to_name: name,
-              email: email, // Matches {{email}} in EmailJS template
-              account_number: accountNumber,
-              account_type: accountType,
-              currency: currency
-            });
+          const resendApiKey = 're_fj6sKoaA_2uUKxcVvUKpoTB1sECeSwmQf'; // Replace with your actual Resend API Key (re_...)
+
+          const emailResponse = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${resendApiKey}`
+            },
+            body: JSON.stringify({
+              from: 'Velorian Bank <accounts@velorianbank.com>', // Matches your verified domain or use onboarding@resend.dev for testing
+              to: [email],
+              subject: `Welcome to Velorian Bank, ${name}!`,
+              html: `
+                <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px;">
+                  <h2 style="color: #0d253f;">Welcome to Velorian Bank</h2>
+                  <p>Dear <strong>${name}</strong>,</p>
+                  <p>Thank you for opening an account with Velorian Bank. Your digital account has been successfully created.</p>
+                  
+                  <div style="background-color: #f4f6f9; padding: 15px; border-radius: 6px; margin: 20px 0;">
+                    <p style="margin: 5px 0;"><strong>Account Number:</strong> ${accountNumber}</p>
+                    <p style="margin: 5px 0;"><strong>Account Type:</strong> ${accountType}</p>
+                    <p style="margin: 5px 0;"><strong>Currency:</strong> ${currency}</p>
+                  </div>
+
+                  <p>You can now sign in to your client portal using your registered email address and password.</p>
+                  <p>Best regards,<br><strong>Velorian Bank Team</strong></p>
+                </div>
+              `
+            })
+          });
+
+          if (emailResponse.ok) {
             emailSent = true;
+          } else {
+            const errorData = await emailResponse.json();
+            console.error("Resend API Error:", errorData);
           }
         } catch (emailErr) {
-          console.error("Email dispatch failed:", emailErr);
+          console.error("Resend dispatch failed:", emailErr);
         }
 
         form.reset();
@@ -104,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (emailSent) {
           show(`Account created successfully! Your new account number is ${accountNumber}. A confirmation email has been sent to ${email}.`, 'success');
         } else {
-          show(`Account created successfully! Your new account number is ${accountNumber}. You can now sign in (email confirmation skipped).`, 'warning');
+          show(`Account created successfully! Your new account number is ${accountNumber}. You can now sign in (email delivery failed).`, 'warning');
         }
       }
     } catch (err) { 
