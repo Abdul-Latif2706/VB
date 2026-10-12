@@ -95,22 +95,24 @@ document.addEventListener("DOMContentLoaded", () => {
         MODALS & BUTTON TRIGGERS (FIXED + NEW CLIENT)
         ========================================================= */
 
-    document.addEventListener("click", (e) => {
-        const targetBtn = e.target.closest("button, .stat-card, a");
-        if (!targetBtn) return;
-
-        const text = targetBtn.textContent.trim().toLowerCase();
-
-        // Handle "+ New client" button click
-        if (text.includes("new client") || text.includes("create client") || targetBtn.id === "newClientBtn" || targetBtn.id === "createClientBtn") {
+    ddocument.addEventListener("click", (e) => {
+        const closeBtn = e.target.closest(".modal-close, [data-close]");
+        if (closeBtn) {
             e.preventDefault();
-            if ($("#clientModal")) {
-                modal("clientModal", true);
-            } else if ($("#createClientModal")) {
-                modal("createClientModal", true);
+            const targetId = closeBtn.getAttribute("data-close");
+            if (targetId) {
+                closeModal(targetId);
             } else {
-                switchSection("clients");
+                const backdrop = closeBtn.closest(".modal-backdrop");
+                if (backdrop) {
+                    backdrop.classList.remove("open");
+                }
             }
+        }
+
+        const backdrop = e.target.closest(".modal-backdrop");
+        if (backdrop && e.target === backdrop) {
+            backdrop.classList.remove("open");
         }
     });
 
