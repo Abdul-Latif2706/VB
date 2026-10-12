@@ -598,6 +598,52 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    /* =========================================================
+        SIGN OUT & DATA RESET HANDLERS
+        ========================================================= */
+
+    document.addEventListener("click", (e) => {
+        const target = e.target.closest("button, a, div");
+        if (!target) return;
+
+        const text = target.textContent.trim().toLowerCase();
+
+        // Sign Out action
+        if (text.includes("sign out") || target.id === "logoutBtn" || target.id === "signOutBtn") {
+            e.preventDefault();
+
+            // Clear session storage & local flags
+            sessionStorage.removeItem("vb_api_admin_token");
+            sessionStorage.removeItem("admin_token");
+            localStorage.removeItem("velorian_admin_logged_in");
+
+            if (typeof vbClearSession === "function") {
+                vbClearSession();
+            }
+
+            toast("Signed out successfully. Redirecting…", "success");
+            
+            setTimeout(() => {
+                window.location.href = "login.html";
+            }, 800);
+        }
+
+        // Reset Bank Data action
+        if (text.includes("reset bank data") || target.id === "resetDataBtn") {
+            e.preventDefault();
+
+            if (confirm("Are you sure you want to reset all local bank data? This cannot be undone.")) {
+                localStorage.removeItem("velorian_bank_state_v5");
+                localStorage.removeItem("velorian_state");
+                toast("Bank data reset to defaults.", "warning");
+
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            }
+        }
+    });
+
     // Initial render call
     renderAll();
 });
