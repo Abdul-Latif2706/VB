@@ -64,13 +64,13 @@ document.addEventListener('DOMContentLoaded', () => {
           name,
           email,
           country,
-          postalCode, // Stores Postal / ZIP Code
+          postalCode,
           phone: postalCode,
           accountType,
           currency,
           accountNumber,
           balance: 0,
-          status: 'Active',
+          status: 'Pending', // <-- Set to Pending for Admin Approval
           password,
           createdAt: new Date().toISOString()
         };
