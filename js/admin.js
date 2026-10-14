@@ -39,10 +39,16 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 3500);
     }
 
-    function modal(id, open = true) {
+   function modal(id, open = true) {
         const element = $(`#${id}`);
         if (!element) return;
-        element.classList.toggle("open", open);
+        if (open) {
+            element.classList.add("open");
+            element.style.display = "flex"; // Forces correct centering display
+        } else {
+            element.classList.remove("open");
+            element.style.display = "none";
+        }
     }
 
     function closeModal(id) {
