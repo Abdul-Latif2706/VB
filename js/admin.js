@@ -115,12 +115,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // 3. Admin Sign Out
-        if (e.target.closest("#adminLogout")) {
-            e.preventDefault();
-            localStorage.removeItem("velorian_admin_logged_in");
-            if (typeof vbLogout === "function") vbLogout();
-            window.location.href = "../login.html"; // <-- Corrected path to root login page
-        }
+     if (e.target.closest("#adminLogout")) {
+         e.preventDefault();
+         localStorage.removeItem("velorian_admin_logged_in");
+         if (typeof vbLogout === "function") vbLogout();
+         window.location.href = "login.html"; // Points to control-center/login.html
+     }
 
         // 4. Modal Close Handling (× or background backdrop)
         document.addEventListener("click", (e) => {
