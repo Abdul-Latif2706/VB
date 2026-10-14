@@ -424,3 +424,67 @@ tbody tr:hover { background: rgba(255,255,255,.025); }
 .otp-timer{padding:12px 14px;border:1px solid rgba(240,196,88,.16);border-radius:12px;background:rgba(240,196,88,.05);color:#dcb66a;text-align:center;font-weight:800;letter-spacing:.08em;font-size:12px}
 #transferOtp{font-size:24px;letter-spacing:.32em;text-align:center;font-weight:800}
 .transfer-modal-note{padding:14px;border-radius:14px;background:rgba(255,255,255,.035);border:1px solid var(--border);color:#8ea2b8;font-size:11px;line-height:1.6}
+
+/* Modal Backdrop Overlay */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(5, 10, 25, 0.85);
+    backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    padding: 1.5rem;
+    overflow-y: auto;
+}
+
+.modal-backdrop.open {
+    display: flex !important;
+}
+
+/* Modal Inner Container Box */
+.modal {
+    background: #0d1527;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 560px; /* Ensures it doesn't stretch too wide */
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    color: #ffffff;
+}
+
+/* Wide Modal Variant (For Client/Transaction Forms) */
+.modal.wide-modal {
+    max-width: 680px;
+}
+
+/* Modal Close Button */
+.modal-close {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: none;
+    color: #ffffff;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
