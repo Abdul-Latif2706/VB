@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -6,14 +7,101 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="Velorian Bank administration portal">
   <base href="/">
+
   <title>Control Center — Velorian Bank</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/preloader.css">
+
+  <style>
+    .pending-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 22px;
+      height: 22px;
+      margin-left: auto;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: #c99b3b;
+      color: #101820;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .pending-count[hidden] {
+      display: none !important;
+    }
+
+    .application-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .application-actions button {
+      cursor: pointer;
+    }
+
+    .pending-intro {
+      margin-bottom: 20px;
+    }
+
+    .pending-notice {
+      margin-bottom: 18px;
+      padding: 14px 16px;
+      border: 1px solid rgba(201, 155, 59, .35);
+      border-radius: 12px;
+      background: rgba(201, 155, 59, .08);
+    }
+
+    .pending-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .pending-table th,
+    .pending-table td {
+      padding: 14px 12px;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    .pending-table td small {
+      display: inline-block;
+      margin-top: 4px;
+      opacity: .75;
+    }
+
+    .pending-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .pending-empty {
+      padding: 26px;
+      text-align: center;
+      opacity: .75;
+    }
+
+    .pending-status {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: rgba(201, 155, 59, .15);
+      color: #d8b15d;
+      font-size: 12px;
+      font-weight: 700;
+    }
+  </style>
 </head>
+
 <body class="app-body">
+
   <div id="vb-preloader" aria-label="Loading Velorian Bank" role="status">
     <div class="vb-loader-shell">
       <div class="vb-loader-mark">
@@ -26,46 +114,88 @@
     </div>
   </div>
 
-  <div id="toast" class="toast"></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <div class="mobile-overlay" id="mobileOverlay"></div>
 
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
       <img src="assets/logo.jfif" alt="Velorian Bank">
     </div>
-    <div class="side-role"><span class="status-dot"></span> Administrator</div>
-    <nav>
-      <button class="nav-item active" data-section="overview" type="button">◈ <span>Overview</span></button>
-      <button class="nav-item" data-section="clients" type="button">♙ <span>Clients</span></button>
-      <button class="nav-item" data-section="transactions" type="button">↕ <span>Transactions</span></button>
-      <button class="nav-item" data-section="audit" type="button">◫ <span>Audit log</span></button>
-      <button class="nav-item" data-section="settings" type="button">⚙ <span>System</span></button>
+
+    <div class="side-role">
+      <span class="status-dot"></span>
+      Administrator
+    </div>
+
+    <nav aria-label="Administrator navigation">
+      <button class="nav-item active" data-section="overview" type="button">
+        ◈ <span>Overview</span>
+      </button>
+
+      <button class="nav-item" data-section="clients" type="button">
+        ♙ <span>Clients</span>
+      </button>
+
+      <!-- NEW: Pending application navigation -->
+      <button class="nav-item" data-section="pending" type="button">
+        <span aria-hidden="true">♧</span>
+        <span>Pending Applications</span>
+        <span id="pendingApplicationsCount" class="pending-count" hidden>0</span>
+      </button>
+
+      <button class="nav-item" data-section="transactions" type="button">
+        ↕ <span>Transactions</span>
+      </button>
+
+      <button class="nav-item" data-section="audit" type="button">
+        ◫ <span>Audit log</span>
+      </button>
+
+      <button class="nav-item" data-section="settings" type="button">
+        ⚙ <span>System</span>
+      </button>
     </nav>
+
     <div class="sidebar-bottom">
       <div class="security-note">
         <span>✓</span>
-        <div><strong>System online</strong><small>Browser prototype</small></div>
+        <div>
+          <strong>System online</strong>
+          <small>Velorian Bank Control Center</small>
+        </div>
       </div>
-      <button id="resetBankData" class="logout-btn" type="button">↻ <span>Reset bank data</span></button>
-      <button id="adminLogout" class="logout-btn" type="button">↪ <span>Sign out</span></button>
+
+      <button id="resetBankData" class="logout-btn" type="button">
+        ↻ <span>Reset bank data</span>
+      </button>
+
+      <button id="adminLogout" class="logout-btn" type="button">
+        ↪ <span>Sign out</span>
+      </button>
     </div>
   </aside>
 
   <main class="app-main">
     <header class="topbar">
       <button class="menu-btn" id="menuBtn" type="button" aria-label="Toggle menu">☰</button>
+
       <div>
         <span class="card-kicker">VELORIAN BANK / CONTROL CENTER</span>
         <h1 id="pageTitle">System Overview</h1>
       </div>
+
       <div class="topbar-user">
         <div class="avatar">VA</div>
-        <div><strong>Hamza</strong><small>Administrator</small></div>
+        <div>
+          <strong>Hamza</strong>
+          <small>Administrator</small>
+        </div>
       </div>
     </header>
 
     <div class="dashboard-content">
-      <!-- Overview Section -->
+
+      <!-- OVERVIEW SECTION -->
       <section class="dashboard-section active" id="overviewSection">
         <div class="welcome-banner glass">
           <div>
@@ -75,72 +205,107 @@
           </div>
           <button class="secondary-btn" id="quickAddClient" type="button">+ New client</button>
         </div>
+
         <div class="stats-grid" id="adminStats"></div>
+
         <div class="analytics-grid">
           <div class="panel glass">
             <div class="panel-head">
-              <div><span class="card-kicker">PERFORMANCE</span><h3>Transaction volume</h3></div>
+              <div>
+                <span class="card-kicker">PERFORMANCE</span>
+                <h3>Transaction volume</h3>
+              </div>
               <span class="muted">Last 7 days</span>
             </div>
             <div id="volumeChart" class="bar-chart"></div>
           </div>
+
           <div class="panel glass">
             <div class="panel-head">
-              <div><span class="card-kicker">ACCOUNT HEALTH</span><h3>Portfolio status</h3></div>
+              <div>
+                <span class="card-kicker">ACCOUNT HEALTH</span>
+                <h3>Portfolio status</h3>
+              </div>
             </div>
             <div id="statusBreakdown" class="status-breakdown"></div>
           </div>
         </div>
+
         <div class="two-column">
           <div class="panel glass">
             <div class="panel-head">
-              <div><span class="card-kicker">LATEST</span><h3>Recent transactions</h3></div>
+              <div>
+                <span class="card-kicker">LATEST</span>
+                <h3>Recent transactions</h3>
+              </div>
               <button class="text-btn" data-go="transactions" type="button">View all →</button>
             </div>
+
             <div class="table-wrap">
               <table>
                 <thead>
-                  <tr><th>Client</th><th>Type</th><th>Amount</th><th>Status</th><th>Time</th></tr>
+                  <tr>
+                    <th>Client</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Time</th>
+                  </tr>
                 </thead>
                 <tbody id="recentTransactions"></tbody>
               </table>
             </div>
           </div>
+
           <div class="panel glass">
             <div class="panel-head">
-              <div><span class="card-kicker">PORTFOLIO</span><h3>Top client balances</h3></div>
+              <div>
+                <span class="card-kicker">PORTFOLIO</span>
+                <h3>Top client balances</h3>
+              </div>
             </div>
             <div id="topClients" class="client-list"></div>
           </div>
         </div>
       </section>
 
-      <!-- Clients Section -->
+      <!-- CLIENT DIRECTORY -->
       <section class="dashboard-section" id="clientsSection">
         <div class="section-heading">
           <div>
             <span class="eyebrow">CLIENT DIRECTORY</span>
             <h2>All client accounts</h2>
-            <p>Create, edit, freeze and manage every registered account.</p>
+            <p>Create, edit, freeze and manage approved accounts.</p>
           </div>
           <button class="primary-btn compact" id="addClientBtn" type="button">+ Create client</button>
         </div>
+
         <div class="panel glass">
           <div class="toolbar">
-            <input id="clientSearch" class="search-input" placeholder="Search name, email or account number...">
-            <select id="clientStatusFilter">
+            <input id="clientSearch" class="search-input" placeholder="Search name, email or account number..." aria-label="Search clients">
+
+            <select id="clientStatusFilter" aria-label="Filter clients by status">
               <option value="all">All statuses</option>
               <option>Active</option>
               <option>Frozen</option>
               <option>Suspended</option>
               <option>Closed</option>
             </select>
+
             <span id="clientCount" class="muted"></span>
           </div>
+
           <div class="table-wrap">
             <table>
               <thead>
-                <tr><th>Client</th><th>Account</th><th>Balance</th><th>Activity</th><th>Status</th><th>Actions</th></tr>
+                <tr>
+                  <th>Client</th>
+                  <th>Account</th>
+                  <th>Balance</th>
+                  <th>Activity</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
               </thead>
               <tbody id="clientsTable"></tbody>
             </table>
@@ -148,7 +313,66 @@
         </div>
       </section>
 
-      <!-- Transactions Section -->
+      <!-- NEW: PENDING APPLICATIONS -->
+      <section class="dashboard-section" id="pendingSection">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">ACCOUNT OPENING</span>
+            <h2>Pending Applications</h2>
+            <p class="pending-intro">
+              Review new account applications before approving or rejecting them.
+            </p>
+          </div>
+
+          <span class="pending-status">
+            Waiting: <span id="pendingApplicationsHeadingCount">0</span>
+          </span>
+        </div>
+
+        <div class="pending-notice">
+          <strong>Administrator review required</strong>
+          <p>
+            Applications should only appear in the active client directory after
+            approval. Confirm that the server records your decision before
+            treating an account as active.
+          </p>
+        </div>
+
+        <div class="panel glass">
+          <div class="panel-head">
+            <div>
+              <span class="card-kicker">NEW CLIENT REQUESTS</span>
+              <h3>Applications awaiting review</h3>
+            </div>
+          </div>
+
+          <div class="pending-table-wrap">
+            <table class="pending-table">
+              <thead>
+                <tr>
+                  <th>Applicant</th>
+                  <th>Phone</th>
+                  <th>Country</th>
+                  <th>Account Type</th>
+                  <th>Currency</th>
+                  <th>Application Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+
+              <tbody id="pendingClientsTable">
+                <tr>
+                  <td colspan="7">
+                    <div class="pending-empty">Loading applications...</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TRANSACTIONS -->
       <section class="dashboard-section" id="transactionsSection">
         <div class="section-heading">
           <div>
@@ -158,27 +382,39 @@
           </div>
           <button class="primary-btn" id="openPostTransaction" type="button">+ Post transaction</button>
         </div>
+
         <div class="panel glass">
           <div class="toolbar">
-            <input id="transactionSearch" class="search-input" placeholder="Search client, account or reference...">
-            <select id="transactionFilter">
+            <input id="transactionSearch" class="search-input" placeholder="Search client, account or reference..." aria-label="Search transactions">
+
+            <select id="transactionFilter" aria-label="Filter transaction type">
               <option value="all">All types</option>
               <option value="deposit">Deposits</option>
               <option value="withdrawal">Withdrawals</option>
               <option value="transfer_out">Transfers sent</option>
               <option value="transfer_in">Transfers received</option>
             </select>
-            <select id="transactionStatusFilter">
+
+            <select id="transactionStatusFilter" aria-label="Filter transaction status">
               <option value="all">All statuses</option>
               <option>Success</option>
               <option>Pending</option>
               <option>Failed</option>
             </select>
           </div>
+
           <div class="table-wrap">
             <table>
               <thead>
-                <tr><th>Reference</th><th>Client</th><th>Account</th><th>Type</th><th>Amount</th><th>Status</th><th>Timestamp</th></tr>
+                <tr>
+                  <th>Reference</th>
+                  <th>Client</th>
+                  <th>Account</th>
+                  <th>Type</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Timestamp</th>
+                </tr>
               </thead>
               <tbody id="transactionsTable"></tbody>
             </table>
@@ -186,7 +422,7 @@
         </div>
       </section>
 
-      <!-- Audit Section -->
+      <!-- AUDIT LOG -->
       <section class="dashboard-section" id="auditSection">
         <div class="section-heading">
           <div>
@@ -195,16 +431,17 @@
             <p>Administrative and system events are recorded here.</p>
           </div>
         </div>
+
         <div class="panel glass">
           <div class="toolbar">
-            <input id="auditSearch" class="search-input" placeholder="Search actions or account numbers...">
+            <input id="auditSearch" class="search-input" placeholder="Search actions or account numbers..." aria-label="Search audit log">
             <span class="muted">Newest first</span>
           </div>
           <div id="auditListFull" class="audit-list full-audit"></div>
         </div>
       </section>
 
-      <!-- Settings Section -->
+      <!-- SETTINGS -->
       <section class="dashboard-section" id="settingsSection">
         <div class="section-heading">
           <div>
@@ -213,12 +450,18 @@
             <p>Manage supported account currencies and internal exchange rates.</p>
           </div>
         </div>
+
         <div class="settings-grid">
           <div class="panel glass setting-card">
             <span class="card-kicker">ACCOUNT CURRENCIES</span>
             <h3>Supported currencies</h3>
             <p>Each client account can use its own currency.</p>
-            <div class="setting-row"><span>Default system currency</span><strong id="currentCurrencyCode">USD</strong></div>
+
+            <div class="setting-row">
+              <span>Default system currency</span>
+              <strong id="currentCurrencyCode">USD</strong>
+            </div>
+
             <div class="currency-control">
               <label for="currencySelect">Default display currency</label>
               <div class="inline-setting">
@@ -229,75 +472,108 @@
                 </select>
                 <button class="primary-btn compact" id="saveCurrency" type="button">Save default</button>
               </div>
-              <small class="setting-help">This does not change existing client account currencies. New accounts default to this currency.</small>
+              <small class="setting-help">
+                This does not change existing client account currencies. New accounts default to this currency.
+              </small>
             </div>
-            <div class="setting-row"><span>Account prefix</span><strong>1092</strong></div>
-            <div class="setting-row"><span>Daily transfer limit</span><strong id="dailyLimitDisplay">$25,000</strong></div>
+
+            <div class="setting-row">
+              <span>Account prefix</span>
+              <strong>1092</strong>
+            </div>
+
+            <div class="setting-row">
+              <span>Daily transfer limit</span>
+              <strong id="dailyLimitDisplay">$25,000</strong>
+            </div>
           </div>
+
           <div class="panel glass setting-card">
             <span class="card-kicker">EXCHANGE RATES</span>
             <h3>Internal transfer rates</h3>
             <p>Used only when sending money between accounts with different currencies.</p>
+
             <div class="rate-grid">
-              <label>USD → GBP<input id="rateUSDGBP" type="number" step="0.0001" min="0.0001"></label>
-              <label>USD → EUR<input id="rateUSDEUR" type="number" step="0.0001" min="0.0001"></label>
-              <label>GBP → USD<input id="rateGBPUSD" type="number" step="0.0001" min="0.0001"></label>
-              <label>GBP → EUR<input id="rateGBPEUR" type="number" step="0.0001" min="0.0001"></label>
-              <label>EUR → USD<input id="rateEURUSD" type="number" step="0.0001" min="0.0001"></label>
-              <label>EUR → GBP<input id="rateEURGBP" type="number" step="0.0001" min="0.0001"></label>
+              <label>USD → GBP
+                <input id="rateUSDGBP" type="number" step="0.0001" min="0.0001">
+              </label>
+
+              <label>USD → EUR
+                <input id="rateUSDEUR" type="number" step="0.0001" min="0.0001">
+              </label>
+
+              <label>GBP → USD
+                <input id="rateGBPUSD" type="number" step="0.0001" min="0.0001">
+              </label>
+
+              <label>GBP → EUR
+                <input id="rateGBPEUR" type="number" step="0.0001" min="0.0001">
+              </label>
+
+              <label>EUR → USD
+                <input id="rateEURUSD" type="number" step="0.0001" min="0.0001">
+              </label>
+
+              <label>EUR → GBP
+                <input id="rateEURGBP" type="number" step="0.0001" min="0.0001">
+              </label>
+
               <button class="primary-btn full-field" id="saveRates" type="button">Save exchange rates</button>
             </div>
-            <small class="setting-help">Example: if USD → GBP is 0.78, a $100 transfer credits £78.00.</small>
+
+            <small class="setting-help">
+              Example: if USD → GBP is 0.78, a $100 transfer credits £78.00.
+            </small>
           </div>
         </div>
       </section>
+
     </div>
   </main>
 
+  <!-- KEEP YOUR EXISTING MODALS BELOW THIS LINE.
+       Restore their complete contents from your original HTML file.
+       Do not replace working forms with the placeholder comments. -->
+
   <div class="modal-backdrop" id="postTransactionModal">
     <div class="modal glass wide-modal">
-      <button class="modal-close" data-close="postTransactionModal" type="button">×</button>
-      <!-- ... -->
+      <button class="modal-close close-modal-btn" type="button">×</button>
+      <!-- Restore the existing post-transaction form here. -->
     </div>
   </div>
 
   <div class="modal-backdrop" id="clientModal">
     <div class="modal glass wide-modal">
-      <button class="modal-close" data-close="clientModal" type="button">×</button>
+      <button class="modal-close close-modal-btn" type="button">×</button>
       <span class="eyebrow">NEW ACCOUNT</span>
       <h2>Create client profile</h2>
       <p class="modal-sub">A unique 10-digit account number will be generated automatically.</p>
-      <form id="createClientForm" class="form-stack form-grid">
-        <!-- Notice the placeholder is now removed from full name -->
-        <label>Full name<input id="newClientName" required placeholder=""></label>
-        <label>Email<input id="newClientEmail" type="email" required placeholder="client@example.com"></label>
-        <!-- ... rest of your form ... -->
-      </form>
+      <!-- Restore your complete existing createClientForm here. -->
     </div>
   </div>
 
   <div class="modal-backdrop" id="editClientModal">
     <div class="modal glass wide-modal">
-      <button class="modal-close" data-close="editClientModal" type="button">×</button>
-      <!-- ... -->
+      <button class="modal-close close-modal-btn" type="button">×</button>
+      <!-- Restore the existing edit-client form here. -->
     </div>
   </div>
 
   <div class="modal-backdrop" id="passwordModal">
     <div class="modal glass">
-      <button class="modal-close" data-close="passwordModal" type="button">×</button>
-      <!-- ... -->
+      <button class="modal-close close-modal-btn" type="button">×</button>
+      <!-- Restore the existing password form here. -->
     </div>
   </div>
 
   <div class="modal-backdrop" id="clientDetailsModal">
     <div class="modal glass wide-modal">
-      <button class="modal-close" data-close="clientDetailsModal" type="button">×</button>
+      <button class="modal-close close-modal-btn" type="button">×</button>
       <div id="clientDetails"></div>
     </div>
   </div>
 
-  <!-- Scripts -->
+  <!-- SCRIPTS -->
   <script src="js/storage.js"></script>
   <script src="js/config.js"></script>
   <script src="js/online-api.js"></script>
@@ -305,5 +581,6 @@
   <script src="js/admin.js"></script>
   <script src="js/preloader.js"></script>
   <script src="js/password-toggle.js"></script>
+
 </body>
 </html>
