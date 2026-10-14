@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
             e.preventDefault();
             localStorage.removeItem("velorian_admin_logged_in");
             if (typeof vbLogout === "function") vbLogout();
-            window.location.href = "login.html";
+            window.location.href = "../login.html"; // <-- Corrected path to root login page
         }
 
         // 4. Modal Close Handling (× or background backdrop)
