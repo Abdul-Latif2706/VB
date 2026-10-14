@@ -177,8 +177,25 @@ tbody tr:hover { background: rgba(255,255,255,.025); }
 .action-btn:hover { color: white; border-color: rgba(78,140,255,.4); }
 .mobile-overlay { display: none; }
 
-.modal-backdrop { position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,.64); display: none; place-items: center; padding: 20px; backdrop-filter: blur(7px); }
-.modal-backdrop.open { display: grid; }
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(5, 10, 25, 0.8);
+    backdrop-filter: blur(4px);
+    display: none; /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 1rem;
+    overflow-y: auto;
+}
+
+.modal-backdrop.open {
+    display: flex !important; /* Forces visibility when opened */
+}
 .modal { width: min(520px, 100%); border-radius: 25px; padding: 30px; position: relative; max-height: 90vh; overflow: auto; }
 .modal h2 { margin-top: 8px; font-size: 25px; }
 .modal-sub { font-size: 12px; margin-top: 7px; }
