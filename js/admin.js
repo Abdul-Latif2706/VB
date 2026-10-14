@@ -44,10 +44,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!element) return;
         if (open) {
             element.classList.add("open");
-            element.style.display = "flex"; // Forces correct centering display
+            element.style.display = "flex";
         } else {
             element.classList.remove("open");
-            element.style.display = "none";
+            element.style.display = "none"; // Clears the inline display so it hides fully
         }
     }
 
@@ -123,6 +123,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // 4. Modal Close Handling (× or background backdrop)
+        document.addEventListener("click", (e) => {
+        // Handle clicking any close button (×) inside a modal
         const closeBtn = e.target.closest(".modal-close, [data-close]");
         if (closeBtn) {
             e.preventDefault();
@@ -133,14 +135,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 const backdrop = closeBtn.closest(".modal-backdrop");
                 if (backdrop) {
                     backdrop.classList.remove("open");
+                    backdrop.style.display = "none"; // Ensure inline style resets too
                 }
             }
         }
 
+        // Handle clicking the dark background backdrop to close modal
         const backdrop = e.target.closest(".modal-backdrop");
         if (backdrop && e.target === backdrop) {
             backdrop.classList.remove("open");
+            backdrop.style.display = "none";
         }
+    });
 
         // 5. Handle Approve / Accept Client Action
         const approveBtn = e.target.closest("[data-approve-client]");
